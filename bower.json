@@ -1,0 +1,20 @@
+{
+"name": "lehoang",
+"version": "0.0.1",
+"authors": [
+	"lehoang"
+],
+"description": "lehoang",
+"license": "MIT",
+"homepage": "www.lehoang.vn",
+"dependencies": {
+	"angular": "*",
+	"bootstrap": "*",
+	"angular-route":"*",
+	"angular-bootstrap": "*",
+	"angular-animate": "*"
+	},
+"install": {
+	"path": "client/libs"
+}
+}
