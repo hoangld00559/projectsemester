@@ -16,6 +16,9 @@ var UserSchema = mongoose.Schema({
 	},
 	name: {
 		type: String
+	},
+	something: {
+		type: Array
 	}
 });
 
@@ -45,3 +48,4 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
     	callback(null, isMatch);
 	});
 }
+

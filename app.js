@@ -2,22 +2,16 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var expressValidator = require('express-validator');
-var flash = require('connect-flash');
-var session = require('express-session');
-var cookieParser = require('cookie-parser');
-// var exphbs = require('express-handlebars');
 var path = require('path');
 
 app.use(express.static(__dirname+'/client'));
 app.use(bodyParser.json());
 
 
-Book =require('./models/book');
-User =require('./models/user');
+Book = require('./models/book');
+User = require('./models/user');
 Author = require('./models/author');
+Cart = require('./models/cart');
 
 // Connect to Mongoose
 mongoose.connect('mongodb://localhost/bookstore');
@@ -47,21 +41,13 @@ app.get('/api/books', (req, res) => {
 	});
 });
 
+
 app.get('/api/books/:_id', (req, res) => {
 	Book.getBookById(req.params._id, (err, book) => {
 		if(err){
 			throw err;
 		}
 		res.json(book);
-	});
-});
-
-app.get('/api/books/', (req, res) => {
-	Book.getBooksbyGenre(query, function(err, data){
-		if(err){
-			throw err;
-		}
-		res.json(data);
 	});
 });
 
@@ -96,6 +82,7 @@ app.delete('/api/books/:_id', (req, res) => {
 		res.json(book);
 	});
 });
+
 
 
 // Author
@@ -139,7 +126,7 @@ app.put('/api/brands/:_id', (req, res) => {
 	});
 });
 
-app.delete('/api/authors/:_id', (req, res) => {
+app.delete('/api/brands/:_id', (req, res) => {
 	var id = req.params._id;
 	Author.removeAuthor(id, (err, author) => {
 		if(err){
@@ -149,57 +136,23 @@ app.delete('/api/authors/:_id', (req, res) => {
 	});
 });
 
+// Cart
 
-    // Users nodejs
-
-// BodyParser Middleware
-app.use(cookieParser());
-
-// Express Session
-app.use(session({
-    secret: 'secret',
-    saveUninitialized: true,
-    resave: true
-}));
-
-
-// Passport init
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Express Validator
-// app.use(expressValidator({
-//   errorFormatter: function(param, msg, value) {
-//       var namespace = param.split('.')
-//       , root    = namespace.shift()
-//       , formParam = root;
-
-//     while(namespace.length) {
-//       formParam += '[' + namespace.shift() + ']';
-//     }
-//     return {
-//       param : formParam,
-//       msg   : msg,
-//       value : value
-//     };
-//   }
-// }));
-
-// Connect Flash
-app.use(flash());
-
-// Global Vars
-app.use(function (req, res, next) {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error = req.flash('error');
-  res.locals.user = req.user || null;
-  next();
+app.post('/api/carts', (req, res) => {
+	var cart = req.body;
+	Cart.addCart(cart, (err, cart) => {
+		if(err){
+			throw err;
+		}
+		res.json(cart);
+		console.log(cart);
+	});
 });
 
+
+    // Users nodejs
 // Register
 app.get('/api/registers', function(req, res){
-	// res.sendFile(path.join(__dirname+'/client/views/register.html'));
 	res.send('Please register');
 });
 
@@ -214,12 +167,7 @@ app.get('/api/register/:_userId', function(req,res){
 	})	
 })
 
-// Login
 
-app.get('/api/logins', function(req, res){
-	// res.sendFile(path.join(__dirname+'/client/views/login.html'));
-	res.send('Please login');
-});
 
 // Register User
 app.post('/api/registers', function(req, res){
@@ -236,41 +184,11 @@ app.post('/api/registers', function(req, res){
 	});
 });
 
-// passport.use(new LocalStrategy(
-//   function(username, password, done) {
-//    User.getUserByUsername(username, function(err, user){
-//    	if(err) throw err;
-//    	if(!user){
-//    		return done(null, false, {message: 'Unknown User'});
- 
-//    	}
+// Login
 
-//    	User.comparePassword(password, user.password, function(err, isMatch){
-//    		if(err) throw err;
-//    		if(isMatch){
-//    			return done(null, user);
-//    		} else {
-//    			return done(null, false, {message: 'Invalid password'});
-//    		}
-//    	});
-//    });
-//   }));
-
-// passport.serializeUser(function(user, done) {
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser(function(id, done) {
-//   User.getUserById(id, function(err, user) {
-//     done(err, user);
-//   });
-// });
-
-// app.post('/api/logins', passport.authenticate('local', {successRedirect:'/api/products', failureRedirect:'/api/logins',failureFlash: false}),
-//   function(req, res) {
-//     res.redirect('/');
-// });
-
+app.get('/api/logins', function(req, res){
+	res.send('Please login');
+});
 
 app.post('/api/logins', function(req, res){
 	var username = req.body.username;
@@ -294,14 +212,6 @@ app.post('/api/logins', function(req, res){
 		};
 		
 	});
-});
-
-app.get('/api/logout', function(req, res){
-	req.logout();
-
-	req.flash('success_msg', 'You are logged out');
-
-	res.redirect('/api/logins');
 });
 
 
