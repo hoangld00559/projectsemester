@@ -84,7 +84,6 @@ app.delete('/api/books/:_id', (req, res) => {
 });
 
 
-
 // Author
 
 app.get('/api/brands', (req, res) => {
@@ -145,10 +144,38 @@ app.post('/api/carts', (req, res) => {
 			throw err;
 		}
 		res.json(cart);
-		console.log(cart);
 	});
 });
 
+app.get('/api/carts', (req, res) => {
+	Cart.getCarts((err, carts) => {
+		if(err){
+			throw err;
+		}
+		res.json(carts);
+	});
+});
+
+app.delete('/api/carts/:_id', (req, res) => {
+	var id = req.params._id;
+	Cart.removeCart(id, (err, cart) => {
+		if(err) {
+			throw err;
+		}
+		res.json(cart);
+	});
+});
+
+app.put('/api/carts/:_id', (req, res) => {
+	var id = req.params._id;
+	var cart = req.body.send;
+	Cart.findByIdAndUpdate(id, { $set: { status: cart }}, (err, cart) => {
+		if(err){
+			throw err;
+		}
+		res.json(cart);
+	});
+});
 
     // Users nodejs
 // Register
@@ -196,17 +223,17 @@ app.post('/api/logins', function(req, res){
 	User.getUserByUsername(username, function(err, user) {
 		if (err) {console.log(err);};
 		if(!user) {
-			console.log("khong phai user");
-			res.status(404).send("User not Found!");
+			console.log("Không phải là user");
+			res.status(404).send("User không tìm thấy!");
 		} else{
 			User.comparePassword(password, user.password, function(err, isMatch){
 				if(err) {console.log(err);};
 				if (isMatch) {
 				res.status(200).send(user);
-				res.end("dang nhap thanh cong");
+				res.end("Đăng nhập thành công");
 				} else {
 				console.log("khong dung pass");
-				res.status(404).send('Password khong dung');
+				res.status(404).send('Password không đúng');
 				};
 			});
 		};
@@ -215,7 +242,7 @@ app.post('/api/logins', function(req, res){
 });
 
 
-var port = process.env.PORT || 8500;
+var port = process.env.PORT || 6500;
 app.listen(port, function(){
 	console.log('SERVER RUNNING.... PORT ' + port);
 });

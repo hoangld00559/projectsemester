@@ -19,6 +19,10 @@ var UserSchema = mongoose.Schema({
 	},
 	something: {
 		type: Array
+	},
+	create_date:{
+		type: Date,
+		default: Date.now
 	}
 });
 

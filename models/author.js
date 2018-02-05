@@ -30,23 +30,23 @@ module.exports.getAuthors = (callback, limit) => {
 	Author.find(callback).limit(limit);
 }
 
-// Get Book
+// Get Author
 module.exports.getAuthorById = (id, callback) => {
 	Author.findById(id, callback);
 }
 
-// Add Book
+// Add Author
 module.exports.addAuthor = (author, callback) => {
 	Author.create(author, callback);
 }
 
-// Delete Book
+// Delete Author
 module.exports.removeAuthor = (id, callback) => {
 	var query = {_id: id};
 	Author.remove(query, callback);
 }
 
-// Update Book
+// Update Author
 module.exports.updateAuthor = (id, author, options, callback) => {
 	var query = {_id: id};
 	var update = {
